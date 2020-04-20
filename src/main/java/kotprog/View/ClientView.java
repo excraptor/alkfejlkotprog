@@ -16,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -23,6 +24,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import kotprog.Controller.GroupController;
 import kotprog.Controller.MessageController;
@@ -31,25 +33,14 @@ import kotprog.Model.ChatgroupModel;
 import kotprog.Model.MessageModel;
 import kotprog.Model.UserModel;
 import kotprog.Utils.ConnectionUtil;
-import kotprog.Utils.TaskReadThread;
 
-/**
- *
- * @author topman garbuja,
- *
- *         This is the client which passes and get message to and from server
- *         and further to multiple clients
- *
- *         It also uses TaskReadThread.java file to be used in a new thread in
- *         order to get simultaneous input from server
- */
 public class ClientView extends Stage {
 
     // controls
 
     TextField txtInput;
     ScrollPane scrollPane;
-    public TextArea txtAreaDisplay;
+    public VBox messageDisplayArea;
     UserController userController = UserController.getInstance();
     GroupController groupController = GroupController.getInstance();
     MessageController messageController = MessageController.getInstance();
@@ -92,17 +83,21 @@ public class ClientView extends Stage {
         scrollPane = new ScrollPane(); // pane to display text messages
         HBox hBox = new HBox(); // pane to hold input textfield and send button
 
-        txtAreaDisplay = new TextArea();
-        txtAreaDisplay.setEditable(false);
-        scrollPane.setContent(txtAreaDisplay);
+        messageDisplayArea = new VBox();
+
+        scrollPane.setContent(messageDisplayArea);
         scrollPane.setFitToHeight(true);
         scrollPane.setFitToWidth(true);
         messages = messageController.getMessagesFromGroup(currentGroup.getName());
         for (MessageModel messageModel : messages) {
-            txtAreaDisplay.appendText("[" + messageModel.getUserNick() + "]: " + messageModel.getMessage() + "");
+            messageDisplayArea.getChildren().add(new Label("[" + messageModel.getUserNick() + "]: " + messageModel.getMessage() + ""));
         }
         // define textfield and button and add to hBox
-
+        final FileChooser fileChooser = new FileChooser();
+        final Button openButton = new Button("Choose image");
+        openButton.setOnAction(e -> {
+            
+        });
         txtInput = new TextField();
         txtInput.setPromptText("New message");
         txtInput.setTooltip(new Tooltip("Write your message. "));
@@ -114,7 +109,7 @@ public class ClientView extends Stage {
             if (message.length() == 0) {
                 return;
             }
-            txtAreaDisplay.appendText("[" + userName + "]: " + message + "\n");
+            messageDisplayArea.getChildren().add(new Label("[" + userName+ "]: " + message + ""));
             messageController.sendMessage(new MessageModel(message,userName, getCurrentGroup().getName()));
             txtInput.clear();
         });

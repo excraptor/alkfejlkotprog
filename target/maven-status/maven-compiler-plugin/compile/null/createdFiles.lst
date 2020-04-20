@@ -14,7 +14,6 @@ kotprog/Controller/MessageController.class
 kotprog/View/Index.class
 kotprog/View/AuthView.class
 kotprog/DAO/ChatDAOInterface.class
-kotprog/Utils/TaskReadThread.class
 kotprog/Controller/GroupController.class
 kotprog/DAO/ChatDAO.class
 kotprog/View/LaunchView.class

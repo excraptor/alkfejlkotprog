@@ -1,15 +1,22 @@
 package kotprog.View;
 
+import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.io.FileUtils;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -21,6 +28,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -47,6 +56,8 @@ public class ClientView extends Stage {
     private UserModel currentUser;
     private ChatgroupModel currentGroup;
     private List<MessageModel> messages;
+    private File currentImage;
+    private String currentImageString;
 
     public ChatgroupModel getCurrentGroup() {
         return this.currentGroup;
@@ -90,31 +101,53 @@ public class ClientView extends Stage {
         scrollPane.setFitToWidth(true);
         messages = messageController.getMessagesFromGroup(currentGroup.getName());
         for (MessageModel messageModel : messages) {
-            messageDisplayArea.getChildren().add(new Label("[" + messageModel.getUserNick() + "]: " + messageModel.getMessage() + ""));
+            messageDisplayArea.getChildren()
+                    .add(new Label("[" + messageModel.getUserNick() + "]: " + messageModel.getMessage() + ""));
         }
-        // define textfield and button and add to hBox
+        // define filechooser to be able to send messages
         final FileChooser fileChooser = new FileChooser();
         final Button openButton = new Button("Choose image");
         openButton.setOnAction(e -> {
-            
+            File file = fileChooser.showOpenDialog(this);
+            this.currentImage = file;
+            try {
+                byte[] fileContent = FileUtils.readFileToByteArray(file);
+                String encodedString = Base64.getEncoder().encodeToString(fileContent);
+                this.currentImageString = encodedString;
+                System.out.println("file selected");
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         });
+        // define textfield and button and add to hBox
         txtInput = new TextField();
         txtInput.setPromptText("New message");
         txtInput.setTooltip(new Tooltip("Write your message. "));
         Button btnSend = new Button("Send");
         btnSend.setOnAction(e -> {
-            System.out.println(currentUser.getNick());
             String userName = currentUser.getNick();
             String message = txtInput.getText().trim();
             if (message.length() == 0) {
                 return;
             }
-            messageDisplayArea.getChildren().add(new Label("[" + userName+ "]: " + message + ""));
-            messageController.sendMessage(new MessageModel(message,userName, getCurrentGroup().getName()));
+            messageDisplayArea.getChildren().add(new Label("[" + userName + "]: " + message + ""));
+            messageController.sendMessage(new MessageModel(message, userName, getCurrentGroup().getName()));
+            if (this.currentImage != null) {
+                Image image = new Image(this.currentImage.toURI().toString());
+                ImageView imageView = new ImageView(image);
+                imageView.setFitHeight(500);
+                imageView.setFitWidth(450);
+                imageView.setPreserveRatio(true);
+                messageDisplayArea.getChildren().add(imageView);
+                this.currentImage = null;
+                this.currentImageString = null;
+            }
+            
             txtInput.clear();
         });
 
-        hBox.getChildren().addAll(txtInput, btnSend);
+        hBox.getChildren().addAll(txtInput, btnSend, openButton);
         HBox.setHgrow(txtInput, Priority.ALWAYS); // set textfield to grow as window size grows
 
         //set center and bottom of the borderPane with scrollPane and hBox

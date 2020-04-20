@@ -25,8 +25,10 @@ van törölni egy felhasználót vagy egy chatszobát.
 
 ## Tervezés
 
-Egyed-kapcsolat diagram
-Adatfolyam diagram
+![Adatfolyam diagram](https://github.com/excraptor/alkfejlkotprog/blob/master/dfd-alkfejlkotprog.png)
+
+
+![Egyed-kapcsolat diagram](https://github.com/excraptor/alkfejlkotprog/blob/master/ek_alkfejlkotprog.png)
 
 
 ## Komponensek:

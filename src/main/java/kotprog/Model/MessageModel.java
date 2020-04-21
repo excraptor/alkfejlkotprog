@@ -9,11 +9,13 @@ public class MessageModel implements Serializable {
     private String message;
     private String userNick;
     private String roomName;
+    private int image = 0;
 
-    public MessageModel (String message, String userNick, String roomName) {
+    public MessageModel (String message, String userNick, String roomName, int image) {
         this.message = message;
         this.userNick = userNick;
         this.roomName = roomName;
+        this.image = image;
     }
 
     public String getMessage() {
@@ -41,6 +43,12 @@ public class MessageModel implements Serializable {
 
     public void setRoomName(String roomName) {
         this.roomName = roomName;
+    }
+    public void setImage(int isImage) {
+        this.image = isImage;
+    }
+    public int isImage() {
+        return this.image;
     }
 
 }

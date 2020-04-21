@@ -101,8 +101,27 @@ public class ClientView extends Stage {
         scrollPane.setFitToWidth(true);
         messages = messageController.getMessagesFromGroup(currentGroup.getName());
         for (MessageModel messageModel : messages) {
-            messageDisplayArea.getChildren()
+            if(messageModel.isImage() == 0) {
+                messageDisplayArea.getChildren()
                     .add(new Label("[" + messageModel.getUserNick() + "]: " + messageModel.getMessage() + ""));
+            } else {
+                byte[] decodedBytes = Base64.getDecoder().decode(messageModel.getMessage());
+                try {
+                    File temp = new File("temp.png");
+                    FileUtils.writeByteArrayToFile(temp, decodedBytes);
+                    Image image = new Image(temp.toURI().toString());
+                    ImageView imageView = new ImageView(image);
+                    imageView.setFitHeight(490);
+                    imageView.setFitWidth(450);
+                    imageView.setPreserveRatio(true);
+                    messageDisplayArea.getChildren().add(new Label("[" + messageModel.getUserNick() + "]:"));
+                    messageDisplayArea.getChildren().add(imageView);
+                    temp.delete();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+            
         }
         // define filechooser to be able to send messages
         final FileChooser fileChooser = new FileChooser();
@@ -116,7 +135,6 @@ public class ClientView extends Stage {
                 this.currentImageString = encodedString;
                 System.out.println("file selected");
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });
@@ -128,18 +146,21 @@ public class ClientView extends Stage {
         btnSend.setOnAction(e -> {
             String userName = currentUser.getNick();
             String message = txtInput.getText().trim();
-            if (message.length() == 0) {
+            if (message.length() == 0 && currentImage == null) {
                 return;
             }
-            messageDisplayArea.getChildren().add(new Label("[" + userName + "]: " + message + ""));
-            messageController.sendMessage(new MessageModel(message, userName, getCurrentGroup().getName()));
+            if(message.length() > 0) {
+                messageDisplayArea.getChildren().add(new Label("[" + userName + "]: " + message + ""));
+                messageController.sendMessage(new MessageModel(message, userName, getCurrentGroup().getName(), 0));
+            }
             if (this.currentImage != null) {
                 Image image = new Image(this.currentImage.toURI().toString());
                 ImageView imageView = new ImageView(image);
-                imageView.setFitHeight(500);
+                imageView.setFitHeight(490);
                 imageView.setFitWidth(450);
                 imageView.setPreserveRatio(true);
                 messageDisplayArea.getChildren().add(imageView);
+                messageController.sendMessage(new MessageModel(currentImageString, userName, getCurrentGroup().getName(), 1));
                 this.currentImage = null;
                 this.currentImageString = null;
             }

@@ -26,9 +26,11 @@ public class ChatDAO implements ChatDAOInterface {
     + "sent text NOT NULL,"
     + "user_nick text NOT NULL,"
     + "group_name text NOT NULL,"
-    + "PRIMARY KEY (sent, user_nick, group_name),"
+    + "is_image integer DEFAULT 0,"
+    + "PRIMARY KEY (sent, user_nick, group_name, message),"
     + "FOREIGN KEY (user_nick) REFERENCES User(nick)," 
     + "FOREIGN KEY (group_name) REFERENCES GroupChat(name));";
+    //private static final String CREATE_MSG1 = " ALTER TABLE Message ADD PRIMARY KEY (sent, user_nick, group_name, message);";
 
     
 
@@ -153,7 +155,7 @@ public class ChatDAO implements ChatDAOInterface {
     }
 
     private static final String INSERT_MSG = "INSERT INTO Message" +
-    "(message, sent, user_nick, group_name) VALUES (?,datetime('now', 'localtime'),?,?)";
+    "(message, sent, user_nick, group_name, is_image) VALUES (?,datetime('now', 'localtime'),?,?,?)";
     @Override
     public boolean addMessage(MessageModel msg) {
         try (Connection conn = DriverManager.getConnection(DB_STRING);
@@ -162,6 +164,7 @@ public class ChatDAO implements ChatDAOInterface {
             st.setString(1, msg.getMessage());
             st.setString(2, msg.getUserNick());
             st.setString(3, msg.getRoomName());
+            st.setInt(4, msg.isImage());
             int res = st.executeUpdate();
             if(res == 1) {
                 return true;
@@ -172,7 +175,8 @@ public class ChatDAO implements ChatDAOInterface {
         return false;
     }
 
-    private static final String SELECT_MSG_FROM_GROUP = "SELECT * FROM Message WHERE group_name = ? ORDER BY sent";    @Override
+    private static final String SELECT_MSG_FROM_GROUP = "SELECT * FROM Message WHERE group_name = ? ORDER BY sent";    
+    @Override
     public List<MessageModel> getMessagesFromGroup(String groupName) {
 
         List<MessageModel> messages = new ArrayList<>();
@@ -184,7 +188,7 @@ public class ChatDAO implements ChatDAOInterface {
             ResultSet rs = st.executeQuery();
             while(rs.next()) {
                 try {
-                    messages.add(new MessageModel(rs.getString(1), rs.getString(3), rs.getString(4)));
+                    messages.add(new MessageModel(rs.getString(1), rs.getString(3), rs.getString(4), rs.getInt(5)));
                 } catch(Exception e){
                     e.printStackTrace();
                 }

@@ -113,13 +113,8 @@ public class AuthView extends Stage{
                 Utils.showWarning("Interest can't be blank");
                 return;
             };
-            UserModel user = new UserModel();
-            user.setNick(textUser.getText());
-            user.setPassword(textPassword.getText());
-            user.setGender(textGender.getText());
-            user.setAge(Integer.parseInt(textAge.getText()));
-            user.setInterest1(textInterest1.getText());
-            user.setInterest2(textInterest2.getText());
+            UserModel user = new UserModel(textUser.getText(),textPassword.getText(),textGender.getText(),Integer.parseInt(textAge.getText()),textInterest1.getText(),textInterest2.getText());
+            
             if(controller.registerUser(user)) {
                 // move to login page
                 Scene loginScene = loginScene();
@@ -162,14 +157,19 @@ public class AuthView extends Stage{
         Button login = new Button("Login");
         layout.add(login, 1,3);
         login.setOnAction(e -> {
-            currentUser = controller.login(textUser.getText(), textPassword.getText());
-            if (currentUser != null) {
-                //move to main page
-                mainWindow.setCurrentUser(currentUser);
-                mainWindow.setScene(Index.constructIndexScene(mainWindow));
+            if(textUser.getText().equals("admin") && textPassword.getText().equals("admin")){
+                AdminView admin = new AdminView();
                 close();
             } else {
-                Utils.showWarning("Wrong username or password");
+                currentUser = controller.login(textUser.getText(), textPassword.getText());
+                if (currentUser != null) {
+                    
+                    mainWindow.setCurrentUser(currentUser);
+                    mainWindow.setScene(Index.constructIndexScene(mainWindow));
+                    close();
+                } else {
+                    Utils.showWarning("Wrong username or password");
+                }
             }
         });
         return new Scene(layout);

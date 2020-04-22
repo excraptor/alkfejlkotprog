@@ -15,6 +15,16 @@ public class UserModel implements Serializable {
     private StringProperty interest1 = new SimpleStringProperty();
     private StringProperty interest2 = new SimpleStringProperty();
 
+    public UserModel(String nick, String password, String gender, int age, String interest1, String interest2){
+        this.nick.set(nick);
+        this.password.set(password);
+        this.gender.set(gender);
+        this.age.set(age);
+        this.interest1.set(interest1);
+        this.interest2.set(interest2);
+    }
+    public UserModel() {}
+
     public final void setNick(String nick) {
         this.nick.set(nick);
     }

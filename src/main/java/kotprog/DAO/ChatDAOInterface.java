@@ -11,4 +11,5 @@ public interface ChatDAOInterface {
     public boolean newGroup(String name, String theme);
     public boolean addMessage(MessageModel msg);
     public List<MessageModel> getMessagesFromGroup(String groupName);
+    public List<UserModel> getAllUsers();
 }

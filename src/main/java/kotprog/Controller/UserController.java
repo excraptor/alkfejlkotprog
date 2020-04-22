@@ -33,6 +33,11 @@ public class UserController {
         return this.currentUser;
     }
 
+    public List<UserModel> getAllUsers() {
+        //threads!!
+        return dao.getAllUsers();
+    }
+
     
 
     

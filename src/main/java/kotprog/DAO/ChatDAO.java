@@ -200,4 +200,30 @@ public class ChatDAO implements ChatDAOInterface {
         return null;
     }
 
+    private static final String GET_ALL_USERS = "SELECT * FROM User";
+    @Override
+    public List<UserModel> getAllUsers() {
+        List<UserModel> users = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection(DB_STRING);
+            Statement sql = conn.createStatement();
+        ) {
+            ResultSet rs = sql.executeQuery(GET_ALL_USERS);
+            while(rs.next()) {
+                users.add(new UserModel(
+                    rs.getString(1),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getInt(4),
+                    rs.getString(5),
+                    rs.getString(6)
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return users;
+    }
+
 }

@@ -35,4 +35,7 @@ public class GroupController {
         this.currentGroup = cg;
         return this;
     }
+    public boolean deleteGroup(String name) {
+        return dao.deleteGroup(name);
+    }
 }

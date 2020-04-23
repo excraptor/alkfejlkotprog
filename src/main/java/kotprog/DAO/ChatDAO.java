@@ -28,8 +28,8 @@ public class ChatDAO implements ChatDAOInterface {
     + "group_name text NOT NULL,"
     + "is_image integer DEFAULT 0,"
     + "PRIMARY KEY (sent, user_nick, group_name, message),"
-    + "FOREIGN KEY (user_nick) REFERENCES User(nick)," 
-    + "FOREIGN KEY (group_name) REFERENCES GroupChat(name));";
+    + "FOREIGN KEY (user_nick) REFERENCES User(nick) ON DELETE CASCADE," 
+    + "FOREIGN KEY (group_name) REFERENCES GroupChat(name) ON DELETE CASCADE);";
     //private static final String CREATE_MSG1 = " ALTER TABLE Message ADD PRIMARY KEY (sent, user_nick, group_name, message);";
 
     
@@ -225,5 +225,41 @@ public class ChatDAO implements ChatDAOInterface {
 
         return users;
     }
+
+    private static final String DELETE_USER = "DELETE FROM User WHERE nick = ?";
+    @Override
+    public boolean deleteUser(String nick) {
+        try (Connection conn = DriverManager.getConnection(DB_STRING);
+            PreparedStatement st = conn.prepareStatement(DELETE_USER);
+        ) {
+            st.setString(1, nick);
+            int res = st.executeUpdate();
+            if(res == 1) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private static final String DELETE_GROUP = "DELETE FROM GroupChat WHERE name = ?";
+    @Override
+    public boolean deleteGroup(String name) {
+        try (Connection conn = DriverManager.getConnection(DB_STRING);
+            PreparedStatement st = conn.prepareStatement(DELETE_GROUP);
+        ) {
+            st.setString(1, name);
+            int res = st.executeUpdate();
+            if(res == 1) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    
 
 }

@@ -34,8 +34,11 @@ public class UserController {
     }
 
     public List<UserModel> getAllUsers() {
-        //threads!!
         return dao.getAllUsers();
+    }
+
+    public boolean deleteUser(String nick) {
+        return dao.deleteUser(nick);
     }
 
     

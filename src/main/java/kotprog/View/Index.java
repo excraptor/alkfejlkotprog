@@ -19,6 +19,7 @@ public class Index {
 
     private static UserController userController = UserController.getInstance();
     private static GroupController groupController = GroupController.getInstance();
+    static List<ChatgroupModel> chatgroups = groupController.getAllChatgroups();
     //private UserModel currentUser;
 
     public static Scene constructIndexScene(LaunchView mainWindow) {
@@ -49,7 +50,7 @@ public class Index {
 
         VBox groupContainer = new VBox();
         layout.add(groupContainer, 0, 2);
-        List<ChatgroupModel> chatgroups = groupController.getAllChatgroups();
+        
         for (ChatgroupModel chatgroupModel : chatgroups) {
             Text groupName = new Text(chatgroupModel.getName());
             groupName.setFont(Font.font("Tahoma", FontWeight.LIGHT, 20));
@@ -59,14 +60,11 @@ public class Index {
             
             groupName.setOnMouseClicked(e -> {
                 ClientView client = new ClientView(chatgroupModel, mainWindow.getCurrentUser());
-                
             });
 
             
         }
-
-
-
         return new Scene(layout, 540, 640);
     }
+    
 }

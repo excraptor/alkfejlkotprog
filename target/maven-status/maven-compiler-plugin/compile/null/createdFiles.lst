@@ -1,6 +1,7 @@
 kotprog/Controller/UserController.class
 kotprog/View/ClientView.class
 kotprog/Server/TaskClientConnection.class
+kotprog/View/AdminView$1.class
 kotprog/Utils/ConnectionUtil.class
 kotprog/Model/ChatgroupModel.class
 kotprog/View/NewGroupDialog.class
@@ -8,6 +9,7 @@ kotprog/Utils/Utils.class
 kotprog/Server/Server.class
 kotprog/App.class
 kotprog/SystemInfo.class
+kotprog/View/AdminView$1$1.class
 kotprog/Model/MessageModel.class
 kotprog/Model/UserModel.class
 kotprog/Controller/MessageController.class

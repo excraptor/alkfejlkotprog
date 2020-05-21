@@ -1,9 +1,9 @@
 ## Alkalmazásfejlesztés I. kötelező program
 
-# A feladat egy chat applikáció megvalósítása volt a Maven build rendszer, JavaFX GUI, Java Servletek/JSP oldalak és az SQLite adatbáziskezelő rendszer használatával. 
+### A feladat egy chat applikáció megvalósítása volt a Maven build rendszer, JavaFX GUI, Java Servletek/JSP oldalak és az SQLite adatbáziskezelő rendszer használatával. 
 
 ## Funkciók
-
+###
 - Regisztráció, bejelentkezés
 - Különböző chatszobák létrehozása
 - Chatszobákba szöveges üzenet, formázott üzenet, emoji és képek küldésének a lehetősége
